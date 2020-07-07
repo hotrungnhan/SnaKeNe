@@ -7,14 +7,24 @@
 #include "Wall.h"
 #include "Food.h"
 using namespace std;
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
+enum snakeMoveState
+{
+    up,
+    down,
+    left,
+    right
+};
 class Snake
 {
     vector<Point> body;
     Point speed;
+    int state;
+
+private:
+    Point getHead()
+    {
+        return body[0];
+    };
 
 public:
     Snake(Wall wall)
@@ -23,48 +33,79 @@ public:
         temp.set((wall.bottomright.x + wall.topleft.x) / 2, (wall.bottomright.y + wall.topleft.y) / 2);
         this->speed.set(0, 0);
         body.push_back(temp);
+        body.push_back(temp - Point(1, 0));
+        body.push_back(temp - Point(2, 0));
+        this->keypress('d');
     }
     void keypress(char t)
     {
-        if (t == 'd' || t == KEY_RIGHT) //&& !(lastkey == KEY_LEFT || lastkey == 'a'))
-            this->speed.set(0.4, 0);
-        if (t == 's' || t == KEY_DOWN) //&& !(lastkey == KEY_UP || lastkey == 'w'))
-            this->speed.set(0, 0.2);
-        if (t == 'a' || t == KEY_LEFT) //&& !(lastkey == KEY_RIGHT || lastkey == 'd'))
-            this->speed.set(-0.4, 0);
-        if (t == 'w' || t == KEY_UP) // && !(lastkey == KEY_DOWN || lastkey == 's'))
-            this->speed.set(0, -0.2);
+        if ((state != right && state != left) && (t == 'd' || t == KEY_RIGHT))
+        {
+            this->speed.set(1, 0);
+            state = right;
+        }
+        if ((state != down && state != up) && (t == 's' || t == KEY_DOWN))
+        {
+            this->speed.set(0, .5);
+            state = down;
+        }
+        if ((state != right && state != left) && (t == 'a' || t == KEY_LEFT))
+        {
+            this->speed.set(-1, 0);
+            state = left;
+        }
+        if ((state != down && state != up) && (t == 'w' || t == KEY_UP))
+        {
+            this->speed.set(0, -.5);
+            state = up;
+        }
     }
     void draw()
     {
-        for (int i = 0; i < body.size(); i++)
+        gotoXY((int)body[0].x, (int)body[0].y);
+        printf("%c", '$'); //176
+        for (int i = 1; i < body.size(); i++)
         {
-            gotoXY(body[i].x, body[i].y);
-            printf("%c", 176);
+            gotoXY((int)body[i].x, (int)body[i].y);
+            printf("%c", 176); //176
         }
     }
     void update()
     {
-        for (int i = body.size() - 1; i > 0; i--)
-        { // duong la huong xuong am huong len
-            body[i] = body[i - 1];
-        }
+        if (!(speed == Point(0, 0)))
+            for (int i = body.size() - 1; i > 0; i--)
+            { // duong la huong xuong am huong len
+                body[i] = body[i - 1];
+            }
         body[0] = body[0] + speed;
     }
     bool die(Wall wall)
     {
         if (!(body[0].x > wall.topleft.x && body[0].y > wall.topleft.x && body[0].x < wall.bottomright.x && body[0].y < wall.bottomright.y))
             return true;
+        if (checkCollsionItSelf())
+            return true;
         return false;
     }
     bool eat(Food food)
     {
-        if (body[0] == food.pos)
+        if (body[0].toInt() == food.pos.toInt())
         {
             Point temp;
             temp = body.back() - speed;
             body.push_back(temp);
             return true;
+        }
+        return false;
+    }
+    bool checkCollsionItSelf()
+    {
+        for (int i = 1; i < body.size(); i++)
+        { // duong la huong xuong am huong len
+            if (getHead() == body[i])
+            {
+                return true;
+            }
         }
         return false;
     }
