@@ -1,4 +1,3 @@
-#pragma once
 struct Point
 {
     float x;
@@ -44,4 +43,3 @@ struct Point
         Point temp((int)x, (int)y);
         return temp;
     }
-};
