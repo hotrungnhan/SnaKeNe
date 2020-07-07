@@ -1,3 +1,4 @@
+
 #pragma once
 struct Point
 {
@@ -31,7 +32,7 @@ struct Point
     }
     bool operator==(Point a)
     {
-        return (int)a.x == (int)this->x && a.y == (int)this->y;
+        return a.x == this->x && a.y == this->y;
     }
     Point set(float x, float y)
     {
@@ -39,4 +40,9 @@ struct Point
         this->y = y;
         return *this;
     }
-};
+    Point toInt()
+    {
+        Point temp((int)x, (int)y);
+        return temp;
+    }
+}
