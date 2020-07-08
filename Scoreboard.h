@@ -24,7 +24,7 @@ public:
     {
         return point;
     }
-    void draw()
+    void drawborder()
     {
         //top left conor
         gotoXY(topleft.x, topleft.y);
@@ -54,6 +54,9 @@ public:
             gotoXY(bottomright.x, i);
             printf("%c", 186);
         }
+    }
+    void drawPoint()
+    {
         //text;
         Point text;
         text = (topleft + bottomright) / 2;

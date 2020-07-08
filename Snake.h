@@ -19,6 +19,7 @@ class Snake
     vector<Point> body;
     Point speed;
     int state;
+    Point Prevlast;
 
 private:
     Point getHead()
@@ -64,24 +65,31 @@ public:
     {
         gotoXY((int)body[0].x, (int)body[0].y);
         printf("%c", '$'); //176
+        gotoXY(0, 0);
         for (int i = 1; i < body.size(); i++)
         {
             gotoXY((int)body[i].x, (int)body[i].y);
             printf("%c", 176); //176
         }
+        gotoXY(Prevlast.x, Prevlast.y);
+        printf("%c", ' ');
+        gotoXY(0, 0);
     }
     void update()
     {
         if (!(speed == Point(0, 0)))
+        {
+            Prevlast = body[body.size() - 1];
             for (int i = body.size() - 1; i > 0; i--)
             { // duong la huong xuong am huong len
                 body[i] = body[i - 1];
             }
+        }
         body[0] = body[0] + speed;
     }
     bool die(Wall wall)
     {
-        if (!(body[0].x > wall.topleft.x && body[0].y > wall.topleft.x && body[0].x < wall.bottomright.x && body[0].y < wall.bottomright.y))
+        if (!(body[0].x > wall.topleft.x && body[0].y - 1 > wall.topleft.y && body[0].x < wall.bottomright.x && body[0].y < wall.bottomright.y))
             return true;
         if (checkCollsionItSelf())
             return true;

@@ -19,6 +19,6 @@ public:
     void draw()
     {
         gotoXY(pos.x, pos.y);
-        printf("O");
+        // printf("O");
     }
 };

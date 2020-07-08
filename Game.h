@@ -11,6 +11,7 @@ class Game
     Food *food;
     Scoreboard *scoreboard;
     int speed = 100;
+
 public:
     Game()
     {
@@ -29,11 +30,10 @@ public:
     bool run()
     {
         char t;
+        wall->draw();
+        scoreboard->drawborder();
         while (true)
         {
-
-            system("cls");
-
             if (kbhit())
             {
                 t = getch();
@@ -43,6 +43,7 @@ public:
             {
                 //spawn food
                 (*scoreboard)++;
+                scoreboard->drawPoint();
                 delete food;
                 food = new Food(*wall);
                 speed = speed - (int)*scoreboard;
@@ -50,8 +51,6 @@ public:
             snake->update();
             snake->draw();
             food->draw();
-            wall->draw();
-            scoreboard->draw();
             if (snake->die(*wall))
             {
                 return true;
